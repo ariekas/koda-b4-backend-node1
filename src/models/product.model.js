@@ -40,9 +40,21 @@ function edit(newProduct, id) {
   return updatedData;
 }
 
+function deleteProduct(id){
+    const product = arrProducts.find((item) => item.id === Number(id));
+    if (!product) return null;
+  
+    const index = arrProducts.indexOf(product);
+
+    arrProducts.splice(index, 1);
+
+    return product;
+}
+
 module.exports = {
   arrProducts,
   create,
   detail,
   edit,
+  deleteProduct
 };

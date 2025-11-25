@@ -55,7 +55,7 @@ function CreateProduct(req, res) {
 
 function EditProduct(req, res) {
   try {
-    const updated = productModels.edit(req.body, req.params.id);
+    const updated = productModels.edit(req.body, Number(req.params.id));
 
     if (!updated) {
       return res.status(404).json({
@@ -72,9 +72,28 @@ function EditProduct(req, res) {
   }
 }
 
+function deleteProduct(req, res){
+    try {
+        const product = productModels.deleteProduct(Number(req.params.id))
+
+        if (!product){
+            return res.status(404).json({
+                message: "Product not found",
+              });
+        }else{
+            return res.status(201).json({
+                message: "susscess product deleted",
+              });
+        }
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
   listProducts,
   CreateProduct,
   EditProduct,
-  detailProduct
+  detailProduct,
+  deleteProduct
 };
