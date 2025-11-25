@@ -1,15 +1,15 @@
-const mainRouter = require('./src/routers')
+const mainRouter = require("./src/routers");
 const express = require("express");
 const app = express();
 app.use(express.json());
 
 
-app.use(("/"), mainRouter)
+app.use(("/"), mainRouter);
 
 app.get("/", (req, res) => {
   res.json({
     Success: true,
-    Messange: "Back end Running",
+    Messange: "Back end Running"
   });
 });
 
