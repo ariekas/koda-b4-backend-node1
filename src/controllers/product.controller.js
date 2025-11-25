@@ -20,6 +20,26 @@ function listProducts(req, res) {
   }
 }
 
+function detailProduct(req, res){
+    try {
+        const product = productModels.detail(Number(req.params.id));
+        if (!product){
+            res.status(404).json({
+                success:false,
+                message:"error: product not found"
+            })
+        }else{
+            res.status(201).json({
+                success:true,
+                message:"success get detail product",
+                data: product
+            })
+        }
+    } catch (error) {
+        
+    }
+}
+
 function CreateProduct(req, res) {
   try {
     const newProduct = req.body;
@@ -56,4 +76,5 @@ module.exports = {
   listProducts,
   CreateProduct,
   EditProduct,
+  detailProduct
 };
