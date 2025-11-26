@@ -122,8 +122,7 @@ export async function detailProduct(req, res){
  */
 export async function CreateProduct(req, res) {
   try {
-    const newProduct = req.body;
-    const product = await create(newProduct);
+    const product = await create(req.body.name, req.body.price);
     res.status(201).json({
       success: true,
       message: "success create product",
@@ -162,7 +161,7 @@ export async function CreateProduct(req, res) {
  */
 export async function EditProduct(req, res) {
   try {
-    const updated = await edit(req.body, Number(req.params.id));
+    const updated = await edit(req.body.name, req.body.price, Number(req.params.id));
 
     if (!updated) {
       return res.status(404).json({

@@ -31,10 +31,14 @@ export async function create(name, price) {
   });
 }
 
-export async function detail(id) {
+export async function detail(id, name, price) {
   return await prisma.product.findUnique({
     where:{
-      id
+      id : Number(id)
+    },
+    data: {
+      name,
+      price
     }
   });
 }
@@ -57,7 +61,7 @@ export async function uploadImage(id, imagePath) {
   return uploadImage;
 }
 
-export async function edit(name, price, id) {
+export async function   edit(name, price, id) {
   const extProduct = detail(id);
 
   if (!extProduct) {

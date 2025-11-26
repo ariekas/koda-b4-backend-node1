@@ -1,5 +1,7 @@
 import { validationResult } from "express-validator";
 import {findUserEmail, create} from "../models/user.model.js";
+import jwt from "jsonwebtoken";
+import process from "process";
 /**
  * POST /login
  * @summary Login user
@@ -99,12 +101,15 @@ export async function loginController(req, res) {
       });
     }
 
+    const token = jwt.sign({id: user.id}, process.env.APP_SECRET, {
+      expiresIn: "15m"
+    });
+
     res.status(200).json({
       success: true,
       message: "Login berhasil",
       data: {
-        id: user.id,
-        email: user.email
+        token
       }
     });
   } catch (error) {
