@@ -1,4 +1,4 @@
-const productModels = require("../models/product.model");
+import productModels from "../models/product.model.js";
 
 /**
  * GET /products
@@ -27,27 +27,16 @@ const productModels = require("../models/product.model");
  *   "message": "Error: Product Not Found"
  * }
  */
-function listProducts(req, res) {
+export async function listProducts(req, res) {
   try {
-    let products = productModels.arrProducts;
+    const search = req.query.search || null;
+    const sort = req.query.sort || null;
+    const order = req.query.order || "asc";
 
-    if (req.query.search) {
-      let search = req.query.search.toLowerCase();
-      products = products.filter((p) =>
-        p.name.toLowerCase().includes(search)
-      );
-    }
-
-    if (req.query.sort === "price") {
-      let product = req.query.product === "desc" ? -1 : 1;
-
-      products = products.sort((a, b) => {
-        return (a.price - b.price) * product;
-      });
-    }
+    const products = await productModels.getAll(search, sort, order);
 
     if (products.length > 0) {
-      res.status(201).json({
+      res.status(200).json({
         success: true,
         message: "Getting List Products",
         data: products
@@ -60,86 +49,90 @@ function listProducts(req, res) {
     }
   } catch (error) {
     console.log(error);
-  }
-}
-
-/**
- * GET /products/{id}
- * @summary Get detail product
- * @tags Products
- *
- * @param {number} id.path.required - ID produk
- *
- * @return {object} 201 - Success get detail product
- * @example response - 201
- * {
- *   "success": true,
- *   "message": "success get detail product",
- *   "data": { "id": 1, "name": "Coffe Latte", "price": 25000 }
- * }
- *
- * @return {object} 404 - Product not found
- * @example response - 404
- * {
- *   "success": false,
- *   "message": "error: product not found"
- * }
- */
-function detailProduct(req, res){
-  try {
-    const product = productModels.detail(Number(req.params.id));
-    if (!product){
-      res.status(404).json({
-        success:false,
-        message:"error: product not found"
-      });
-    }else{
-      res.status(201).json({
-        success:true,
-        message:"success get detail product",
-        data: product
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-/**
- * GET /products/{id}
- * @summary Get detail product
- * @tags Products
- *
- * @param {number} id.path.required - ID produk
- *
- * @return {object} 201 - Success get detail product
- * @example response - 201
- * {
- *   "success": true,
- *   "message": "success get detail product",
- *   "data": { "id": 1, "name": "Coffe Latte", "price": 25000 }
- * }
- *
- * @return {object} 404 - Product not found
- * @example response - 404
- * {
- *   "success": false,
- *   "message": "error: product not found"
- * }
- */
-function CreateProduct(req, res) {
-  try {
-    const newProduct = req.body;
-    const product = productModels.create(newProduct);
-    res.status(201).json({
-      success: true,
-      message: "success create product",
-      data: product
+    res.status(500).json({
+      success: false,
+      message: "Server Error"
     });
-  } catch (error) {
-    console.log(error);
   }
 }
+
+/**
+ * GET /products/{id}
+ * @summary Get detail product
+ * @tags Products
+ *
+ * @param {number} id.path.required - ID produk
+ *
+ * @return {object} 201 - Success get detail product
+ * @example response - 201
+ * {
+ *   "success": true,
+ *   "message": "success get detail product",
+ *   "data": { "id": 1, "name": "Coffe Latte", "price": 25000 }
+ * }
+ *
+ * @return {object} 404 - Product not found
+ * @example response - 404
+ * {
+ *   "success": false,
+ *   "message": "error: product not found"
+ * }
+ */
+// function detailProduct(req, res){
+//   try {
+//     const product = productModels.detail(Number(req.params.id));
+//     if (!product){
+//       res.status(404).json({
+//         success:false,
+//         message:"error: product not found"
+//       });
+//     }else{
+//       res.status(201).json({
+//         success:true,
+//         message:"success get detail product",
+//         data: product
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+/**
+ * GET /products/{id}
+ * @summary Get detail product
+ * @tags Products
+ *
+ * @param {number} id.path.required - ID produk
+ *
+ * @return {object} 201 - Success get detail product
+ * @example response - 201
+ * {
+ *   "success": true,
+ *   "message": "success get detail product",
+ *   "data": { "id": 1, "name": "Coffe Latte", "price": 25000 }
+ * }
+ *
+ * @return {object} 404 - Product not found
+ * @example response - 404
+ * {
+ *   "success": false,
+ *   "message": "error: product not found"
+ * }
+ */
+// function CreateProduct(req, res) {
+//   try {
+//     const newProduct = req.body;
+//     const product = productModels.create(newProduct);
+//     res.status(201).json({
+//       success: true,
+//       message: "success create product",
+//       data: product
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 /**
  * PUT /products/{id}
@@ -167,24 +160,24 @@ function CreateProduct(req, res) {
  *   "message": "Product not found"
  * }
  */
-function EditProduct(req, res) {
-  try {
-    const updated = productModels.edit(req.body, Number(req.params.id));
+// function EditProduct(req, res) {
+//   try {
+//     const updated = productModels.edit(req.body, Number(req.params.id));
 
-    if (!updated) {
-      return res.status(404).json({
-        message: "Product not found"
-      });
-    }
+//     if (!updated) {
+//       return res.status(404).json({
+//         message: "Product not found"
+//       });
+//     }
 
-    return res.status(201).json({
-      message: "success edit product",
-      data: updated
-    });
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return res.status(201).json({
+//       message: "success edit product",
+//       data: updated
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 /**
  * DELETE /products/{id}
@@ -205,57 +198,48 @@ function EditProduct(req, res) {
  *   "message": "Product not found"
  * }
  */
-function deleteProduct(req, res){
-  try {
-    const product = productModels.deleteProduct(Number(req.params.id));
+// function deleteProduct(req, res){
+//   try {
+//     const product = productModels.deleteProduct(Number(req.params.id));
 
-    if (!product){
-      return res.status(404).json({
-        message: "Product not found"
-      });
-    }else{
-      return res.status(201).json({
-        message: "susscess product deleted"
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     if (!product){
+//       return res.status(404).json({
+//         message: "Product not found"
+//       });
+//     }else{
+//       return res.status(201).json({
+//         message: "susscess product deleted"
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
-function uploadImage(req, res) {
-  const { id } = req.params;
+// function uploadImage(req, res) {
+//   const { id } = req.params;
 
-  if (!req.file) {
-    return res.status(400).json({
-      success: false,
-      message: "Tidak ada file yang diupload"
-    });
-  }
+//   if (!req.file) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "Tidak ada file yang diupload"
+//     });
+//   }
 
-  const imagePath = req.file.path;
+//   const imagePath = req.file.path;
 
-  const updatedProduct = productModels.uploadImage(id, imagePath);
+//   const updatedProduct = productModels.uploadImage(id, imagePath);
 
-  if (!updatedProduct) {
-    return res.status(404).json({
-      success: false,
-      message: "Produk tidak ditemukan"
-    });
-  }
+//   if (!updatedProduct) {
+//     return res.status(404).json({
+//       success: false,
+//       message: "Produk tidak ditemukan"
+//     });
+//   }
 
-  return res.status(201).json({
-    success: true,
-    message: "Upload berhasil",
-    data: updatedProduct
-  });
-}
-
-module.exports = {
-  listProducts,
-  CreateProduct,
-  EditProduct,
-  detailProduct,
-  deleteProduct,
-  uploadImage
-};
+//   return res.status(201).json({
+//     success: true,
+//     message: "Upload berhasil",
+//     data: updatedProduct
+//   });
+// }

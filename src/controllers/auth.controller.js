@@ -1,4 +1,4 @@
-const {validationResult} = require("express-validator");
+import { validationResult } from "express-validator";
 /**
  * POST /login
  * @summary Login user
@@ -23,7 +23,7 @@ const {validationResult} = require("express-validator");
  *   "message": "Login Failed"
  * }
  */
-function loginController(req, res) {
+export function loginController(req, res) {
   const result = validationResult(req);
   if (!result.isEmpty()){
     res.json({
@@ -69,7 +69,7 @@ function loginController(req, res) {
  *   "message": "Register success"
  * }
  */
-function registerController(req, res) {
+export function registerController(req, res) {
   try {
     const { email, password } = req.body;
 
@@ -83,7 +83,3 @@ function registerController(req, res) {
   }
 }
 
-module.exports = {
-  loginController,
-  registerController
-};

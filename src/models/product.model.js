@@ -1,73 +1,96 @@
-const arrProducts = [
-  {
-    id: 1,
-    name: "Coffe Latte",
-    image : "",
-    price: 25000
-  },
-  {
-    id: 2,
-    name: "Nasi Goreng",
-    image: "",
-    price: 32000
-  },
-  {
-    id: 3,
-    name: "Mineral Watter",
-    image : "",
-    price: 5000
+import prisma from "../../lib/connectDB.js";
+
+// const arrProducts = [
+//   {
+//     id: 1,
+//     name: "Coffe Latte",
+//     image: "",
+//     price: 25000
+//   },
+//   {
+//     id: 2,
+//     name: "Nasi Goreng",
+//     image: "",
+//     price: 32000
+//   },
+//   {
+//     id: 3,
+//     name: "Mineral Watter",
+//     image: "",
+//     price: 5000
+//   }
+// ];
+
+async function getAll(search, sort, order) {
+  const where = {};
+
+  if (search) {
+    where.name = {
+      contains: search || ""
+    };
   }
-];
 
-function create(newProduct) {
-  arrProducts.push(newProduct);
+  let orderBy = undefined;
+  if (sort === "price") {
+    orderBy = {
+      price: order === "desc" ? "desc" : "asc"
+    };
+  }
+
+  return prisma.product.findMany({
+    where,
+    orderBy
+  });
 }
 
-function detail(id) {
-  return arrProducts.find((item) => item.id === id);
-}
+// function create(newProduct) {
+//   arrProducts.push(newProduct);
+// }
 
-function uploadImage(id, imagePath) {
-    const product = arrProducts.find((item) => item.id === Number(id));
-    if (!product) return null;
-  
-    product.image = imagePath;
-    return product;
-}
-  
+// function detail(id) {
+//   return arrProducts.find((item) => item.id === id);
+// }
 
-function edit(newProduct, id) {
-  const product = arrProducts.find((item) => item.id === Number(id));
-  if (!product) return null;
+// function uploadImage(id, imagePath) {
+//   const product = arrProducts.find((item) => item.id === Number(id));
+//   if (!product) return null;
 
-  const index = arrProducts.indexOf(product);
+//   product.image = imagePath;
+//   return product;
+// }
 
-  const updatedData = {
-    ...product,
-    ...newProduct
-  };
+// function edit(newProduct, id) {
+//   const product = arrProducts.find((item) => item.id === Number(id));
+//   if (!product) return null;
 
-  arrProducts.splice(index, 1, updatedData);
+//   const index = arrProducts.indexOf(product);
 
-  return updatedData;
-}
+//   const updatedData = {
+//     ...product,
+//     ...newProduct
+//   };
 
-function deleteProduct(id){
-  const product = arrProducts.find((item) => item.id === Number(id));
-  if (!product) return null;
+//   arrProducts.splice(index, 1, updatedData);
 
-  const index = arrProducts.indexOf(product);
+//   return updatedData;
+// }
 
-  arrProducts.splice(index, 1);
+// function deleteProduct(id) {
+//   const product = arrProducts.find((item) => item.id === Number(id));
+//   if (!product) return null;
 
-  return product;
-}
+//   const index = arrProducts.indexOf(product);
 
-module.exports = {
-  arrProducts,
-  create,
-  detail,
-  edit,
-  deleteProduct,
-  uploadImage
+//   arrProducts.splice(index, 1);
+
+//   return product;
+// }
+
+export default {
+  getAll
+  // create,
+  // detail,
+  // edit,
+  // deleteProduct,
+  // uploadImage
 };

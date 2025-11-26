@@ -1,8 +1,8 @@
-const mainRouter = require("./src/routers");
-const express = require("express");
+import mainRouter from "./src/routers/index.js";
+import express, { json } from "express";
 const app = express();
-app.use(express.json());
-const expressJSDocSwagger = require("express-jsdoc-swagger");
+app.use(json());
+import expressJSDocSwagger from "express-jsdoc-swagger";
 
 const options = {
   info: {
